@@ -38,7 +38,7 @@ export const createReservation = async (req, res) => {
         guestCount
       });
     }
-
+    
     res.status(201).json({ message: "Reservation created", data: newReservation });
   } catch (err) {
     res.status(500).json({ message: err.message });

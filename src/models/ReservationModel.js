@@ -8,7 +8,7 @@ const reservationSchema = new mongoose.Schema({
   date: { type: String, required: true }, // YYYY-MM-DD
   time: { type: String, required: true }, // HH:mm
   guestCount: { type: Number, required: true },
-  status: { type: String, enum: ["pending", "confirmed", "cancelled"], default: "pending" }
+  status: { type: String, enum: ["pending", "confirmed", "cancelled"], default: "pending" },
+  note: { type: String }
 }, { timestamps: true });
-
 export default mongoose.model("Reservation", reservationSchema);
