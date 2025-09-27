@@ -1,8 +1,9 @@
 import express from "express";
-import { checkAvailableTables } from "../controllers/table.Controller.js";
 
-const router = express.Router();
+import { checkAvailableTables } from "../controllers/tableController.js";
 
-router.post("/check", checkAvailableTables);
+const tableRouter = express.Router();
 
-export default router;
+tableRouter.post("/check", checkAvailableTables);
+
+export default tableRouter;

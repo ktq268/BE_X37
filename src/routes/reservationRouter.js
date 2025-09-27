@@ -1,6 +1,9 @@
 import express from "express";
-import { createReservation, getReservations } from "../controllers/reservationController.js";
-import { validateReservation } from "../middlewares/validateReservation.js";
+import {
+  createReservation,
+  getReservations,
+} from "../controllers/reservationController.js";
+import { validateReservation } from "../middlewares/ReservationMiddleware.js";
 
 const router = express.Router();
 
