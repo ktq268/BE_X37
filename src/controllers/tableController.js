@@ -1,5 +1,5 @@
-import Table from "../models/Table.js";
-import Reservation from "../models/Reservation.js";
+import Table from "../models/TableModel.js";
+import Reservation from "../models/ReservationModel.js";
 
 // API check bàn trống
 export const checkAvailableTables = async (req, res) => {
@@ -8,10 +8,16 @@ export const checkAvailableTables = async (req, res) => {
     const allTables = await Table.find({ capacity: { $gte: guestCount } });
 
     // lấy danh sách bàn đã được đặt trong cùng date + time
-    const reserved = await Reservation.find({ date, time, status: { $ne: "cancelled" } });
-    const reservedIds = reserved.map(r => r.tableId.toString());
+    const reserved = await Reservation.find({
+      date,
+      time,
+      status: { $ne: "cancelled" },
+    });
+    const reservedIds = reserved.map((r) => r.tableNumber.toString()); 
 
-    const available = allTables.filter(t => !reservedIds.includes(t._id.toString()));
+    const available = allTables.filter(
+      (t) => !reservedIds.includes(t.tableNumber.toString()) 
+    );
 
     res.status(200).json(available);
   } catch (err) {

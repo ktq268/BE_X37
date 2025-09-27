@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "node --watch index.js"
+    "dev": "node --watch index.js",
+    "import-facilities": "node import-facilities.js",
+    "test-api": "node test-facilities-api.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +21,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.6"
   }
 }
