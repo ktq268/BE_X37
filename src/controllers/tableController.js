@@ -13,10 +13,10 @@ export const checkAvailableTables = async (req, res) => {
       time,
       status: { $ne: "cancelled" },
     });
-    const reservedIds = reserved.map((r) => r.tableId.toString());
+    const reservedIds = reserved.map((r) => r.tableNumber.toString()); 
 
     const available = allTables.filter(
-      (t) => !reservedIds.includes(t.tableId.toString())
+      (t) => !reservedIds.includes(t.tableNumber.toString()) 
     );
 
     res.status(200).json(available);
