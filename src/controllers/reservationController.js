@@ -17,8 +17,8 @@ export const createReservation = async (req, res) => {
 
     // check bàn tồn tại
     const table = await Table.findById(tableId);
-    if (!table) return res.status(404).json({ message: "Table not found" });
-    if (guestCount > table.capacity)
+    if (!tableId) return res.status(404).json({ message: "Table not found" });
+    if (guestCount > tableId.capacity)
       return res
         .status(400)
         .json({ message: "Guest count exceeds table capacity" });
