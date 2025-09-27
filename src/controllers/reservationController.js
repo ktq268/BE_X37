@@ -1,20 +1,39 @@
-import Reservation from "../models/Reservation.js";
-import Table from "../models/Table.js";
+import Reservation from "../models/ReservationModel.js";
+import Table from "../models/TableModel.js";
 import { sendConfirmationEmail } from "../services/mailService.js";
 
 // Tạo đặt bàn
 export const createReservation = async (req, res) => {
   try {
-    const { customerName, customerPhone, customerEmail, tableId, date, time, guestCount } = req.body;
+    const {
+      customerName,
+      customerPhone,
+      customerEmail,
+      tableId,
+      date,
+      time,
+      guestCount,
+    } = req.body;
 
     // check bàn tồn tại
     const table = await Table.findById(tableId);
     if (!table) return res.status(404).json({ message: "Table not found" });
-    if (guestCount > table.capacity) return res.status(400).json({ message: "Guest count exceeds table capacity" });
+    if (guestCount > table.capacity)
+      return res
+        .status(400)
+        .json({ message: "Guest count exceeds table capacity" });
 
     // check bàn đã được đặt chưa
-    const existing = await Reservation.findOne({ tableId, date, time, status: { $ne: "cancelled" } });
-    if (existing) return res.status(400).json({ message: "Table already reserved for this time slot" });
+    const existing = await Reservation.findOne({
+      tableId,
+      date,
+      time,
+      status: { $ne: "cancelled" },
+    });
+    if (existing)
+      return res
+        .status(400)
+        .json({ message: "Table already reserved for this time slot" });
 
     // tạo reservation
     const newReservation = await Reservation.create({
@@ -25,7 +44,7 @@ export const createReservation = async (req, res) => {
       date,
       time,
       guestCount,
-      status: "pending"
+      status: "pending",
     });
 
     // gửi mail xác nhận (nếu có email)
@@ -35,11 +54,13 @@ export const createReservation = async (req, res) => {
         date,
         time,
         tableNumber: table.tableNumber,
-        guestCount
+        guestCount,
       });
     }
-    
-    res.status(201).json({ message: "Reservation created", data: newReservation });
+
+    res
+      .status(201)
+      .json({ message: "Reservation created", data: newReservation });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -48,7 +69,10 @@ export const createReservation = async (req, res) => {
 // lấy danh sách booking
 export const getReservations = async (req, res) => {
   try {
-    const reservations = await Reservation.find().populate("tableId", "tableNumber capacity location");
+    const reservations = await Reservation.find().populate(
+      "tableId",
+      "tableNumber capacity location"
+    );
     res.status(200).json(reservations);
   } catch (err) {
     res.status(500).json({ message: err.message });

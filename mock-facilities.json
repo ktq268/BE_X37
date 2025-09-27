@@ -1,0 +1,291 @@
+[
+  {
+    "name": "Cơ sở Hà Nội",
+    "region": "Miền Bắc",
+    "address": "123 Phố Huế, Quận Hai Bà Trưng, Hà Nội",
+    "phone": "024-1234-5678",
+    "email": "hanoi@company.com",
+    "manager": "Nguyễn Văn An",
+    "capacity": 150,
+    "description": "Cơ sở chính tại thủ đô Hà Nội, trang bị đầy đủ tiện nghi hiện đại",
+    "status": "active",
+    "coordinates": {
+      "latitude": 21.0285,
+      "longitude": 105.8542
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Hệ thống âm thanh",
+      "Máy chiếu"
+    ],
+    "operatingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "images": ["hanoi-1.jpg", "hanoi-2.jpg", "hanoi-3.jpg"]
+  },
+  {
+    "name": "Cơ sở Hải Phòng",
+    "region": "Miền Bắc",
+    "address": "456 Lê Lợi, Quận Ngô Quyền, Hải Phòng",
+    "phone": "0225-2345-6789",
+    "email": "haiphong@company.com",
+    "manager": "Trần Thị Bình",
+    "capacity": 120,
+    "description": "Cơ sở tại thành phố cảng Hải Phòng, gần trung tâm thương mại",
+    "status": "active",
+    "coordinates": {
+      "latitude": 20.8449,
+      "longitude": 106.6881
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Café",
+      "Khu vực nghỉ ngơi"
+    ],
+    "operatingHours": {
+      "open": "08:00",
+      "close": "21:00"
+    },
+    "images": ["haiphong-1.jpg", "haiphong-2.jpg"]
+  },
+  {
+    "name": "Cơ sở Đà Nẵng",
+    "region": "Miền Trung",
+    "address": "789 Nguyễn Văn Linh, Quận Thanh Khê, Đà Nẵng",
+    "phone": "0236-3456-7890",
+    "email": "danang@company.com",
+    "manager": "Lê Văn Cường",
+    "capacity": 200,
+    "description": "Cơ sở lớn nhất tại miền Trung, có view biển đẹp",
+    "status": "active",
+    "coordinates": {
+      "latitude": 16.0544,
+      "longitude": 108.2022
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Hồ bơi",
+      "Spa",
+      "Nhà hàng",
+      "Khu vui chơi"
+    ],
+    "operatingHours": {
+      "open": "06:00",
+      "close": "23:00"
+    },
+    "images": ["danang-1.jpg", "danang-2.jpg", "danang-3.jpg", "danang-4.jpg"]
+  },
+  {
+    "name": "Cơ sở Huế",
+    "region": "Miền Trung",
+    "address": "321 Lê Lợi, Phường Phú Nhuận, Huế",
+    "phone": "0234-4567-8901",
+    "email": "hue@company.com",
+    "manager": "Phạm Thị Dung",
+    "capacity": 80,
+    "description": "Cơ sở nhỏ gọn tại cố đô Huế, phong cách cổ kính",
+    "status": "active",
+    "coordinates": {
+      "latitude": 16.4637,
+      "longitude": 107.5909
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Thư viện",
+      "Khu vườn"
+    ],
+    "operatingHours": {
+      "open": "08:00",
+      "close": "20:00"
+    },
+    "images": ["hue-1.jpg", "hue-2.jpg"]
+  },
+  {
+    "name": "Cơ sở Nha Trang",
+    "region": "Miền Trung",
+    "address": "654 Trần Phú, Phường Lộc Thọ, Nha Trang",
+    "phone": "0258-5678-9012",
+    "email": "nhatrang@company.com",
+    "manager": "Võ Văn Em",
+    "capacity": 180,
+    "description": "Cơ sở resort tại Nha Trang, gần bãi biển đẹp",
+    "status": "active",
+    "coordinates": {
+      "latitude": 12.2388,
+      "longitude": 109.1967
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Hồ bơi",
+      "Spa",
+      "Nhà hàng hải sản",
+      "Khu BBQ"
+    ],
+    "operatingHours": {
+      "open": "06:00",
+      "close": "24:00"
+    },
+    "images": ["nhatrang-1.jpg", "nhatrang-2.jpg", "nhatrang-3.jpg"]
+  },
+  {
+    "name": "Cơ sở TP.HCM",
+    "region": "Miền Nam",
+    "address": "987 Nguyễn Huệ, Quận 1, TP.HCM",
+    "phone": "028-6789-0123",
+    "email": "hcm@company.com",
+    "manager": "Đặng Văn Phúc",
+    "capacity": 300,
+    "description": "Cơ sở chính tại TP.HCM, trung tâm thương mại sầm uất",
+    "status": "active",
+    "coordinates": {
+      "latitude": 10.7769,
+      "longitude": 106.7009
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Hệ thống âm thanh",
+      "Máy chiếu",
+      "Café",
+      "Nhà hàng",
+      "Khu hội nghị"
+    ],
+    "operatingHours": {
+      "open": "06:00",
+      "close": "24:00"
+    },
+    "images": ["hcm-1.jpg", "hcm-2.jpg", "hcm-3.jpg", "hcm-4.jpg", "hcm-5.jpg"]
+  },
+  {
+    "name": "Cơ sở Cần Thơ",
+    "region": "Miền Nam",
+    "address": "147 Nguyễn Văn Cừ, Quận Ninh Kiều, Cần Thơ",
+    "phone": "0292-7890-1234",
+    "email": "cantho@company.com",
+    "manager": "Bùi Thị Gia",
+    "capacity": 100,
+    "description": "Cơ sở tại đồng bằng sông Cửu Long, gần chợ nổi",
+    "status": "active",
+    "coordinates": {
+      "latitude": 10.0452,
+      "longitude": 105.7469
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Khu vườn",
+      "Café sân vườn"
+    ],
+    "operatingHours": {
+      "open": "07:00",
+      "close": "21:00"
+    },
+    "images": ["cantho-1.jpg", "cantho-2.jpg"]
+  },
+  {
+    "name": "Cơ sở Vũng Tàu",
+    "region": "Miền Nam",
+    "address": "258 Thùy Vân, Phường 2, Vũng Tàu",
+    "phone": "0254-8901-2345",
+    "email": "vungtau@company.com",
+    "manager": "Ngô Văn Hùng",
+    "capacity": 160,
+    "description": "Cơ sở resort tại Vũng Tàu, view biển tuyệt đẹp",
+    "status": "active",
+    "coordinates": {
+      "latitude": 10.346,
+      "longitude": 107.0843
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Hồ bơi",
+      "Spa",
+      "Nhà hàng",
+      "Khu vui chơi",
+      "Bãi biển riêng"
+    ],
+    "operatingHours": {
+      "open": "06:00",
+      "close": "23:00"
+    },
+    "images": ["vungtau-1.jpg", "vungtau-2.jpg", "vungtau-3.jpg"]
+  },
+  {
+    "name": "Cơ sở Đà Lạt",
+    "region": "Miền Nam",
+    "address": "369 Lê Đại Hành, Phường 1, Đà Lạt",
+    "phone": "0263-9012-3456",
+    "email": "dalat@company.com",
+    "manager": "Hoàng Thị Inh",
+    "capacity": 90,
+    "description": "Cơ sở tại thành phố ngàn hoa Đà Lạt, khí hậu mát mẻ",
+    "status": "maintenance",
+    "coordinates": {
+      "latitude": 11.9404,
+      "longitude": 108.4583
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Lò sưởi",
+      "Khu vườn hoa",
+      "Café view núi"
+    ],
+    "operatingHours": {
+      "open": "08:00",
+      "close": "20:00"
+    },
+    "images": ["dalat-1.jpg", "dalat-2.jpg"]
+  },
+  {
+    "name": "Cơ sở Phú Quốc",
+    "region": "Miền Nam",
+    "address": "741 Trần Hưng Đạo, Phường Dương Đông, Phú Quốc",
+    "phone": "0297-0123-4567",
+    "email": "phuquoc@company.com",
+    "manager": "Lý Văn Kỳ",
+    "capacity": 250,
+    "description": "Cơ sở resort cao cấp tại đảo ngọc Phú Quốc",
+    "status": "active",
+    "coordinates": {
+      "latitude": 10.2899,
+      "longitude": 103.984
+    },
+    "facilities": [
+      "WiFi miễn phí",
+      "Bãi đỗ xe",
+      "Điều hòa",
+      "Hồ bơi",
+      "Spa",
+      "Nhà hàng",
+      "Khu vui chơi",
+      "Bãi biển riêng",
+      "Dịch vụ lặn biển"
+    ],
+    "operatingHours": {
+      "open": "05:00",
+      "close": "24:00"
+    },
+    "images": [
+      "phuquoc-1.jpg",
+      "phuquoc-2.jpg",
+      "phuquoc-3.jpg",
+      "phuquoc-4.jpg"
+    ]
+  }
+]
