@@ -16,7 +16,7 @@ export const checkAvailableTables = async (req, res) => {
     const reservedIds = reserved.map((r) => r.tableId.toString());
 
     const available = allTables.filter(
-      (t) => !reservedIds.includes(t._id.toString())
+      (t) => !reservedIds.includes(t.tableId.toString())
     );
 
     res.status(200).json(available);
