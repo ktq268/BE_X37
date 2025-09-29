@@ -1,0 +1,252 @@
+[{
+  "_id": {
+    "$oid": "68da3a8fd49276f91b028e35"
+  },
+  "name": "Nhà hàng Phở Hà Nội",
+  "region": "north",
+  "address": "24 Tràng Tiền, Hoàn Kiếm, Hà Nội",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:51:43.357Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:51:43.357Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3aafd49276f91b028e37"
+  },
+  "name": "Nhà hàng Hải Sản Đà Nẵng",
+  "region": "central",
+  "address": "12 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:52:15.871Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:52:15.871Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3ab6d49276f91b028e39"
+  },
+  "name": "Nhà hàng Cơm Tấm Sài Gòn",
+  "region": "south",
+  "address": "45 Lê Lợi, Quận 1, TP. Hồ Chí Minh",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:52:22.017Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:52:22.017Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b3bd49276f91b028e3b"
+  },
+  "name": "Nhà hàng Hoàng Đạo Thuý",
+  "region": "north",
+  "address": "120 Hoàng Đạo Thuý, Cầu Giấy, Hà Nội",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:54:35.218Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:54:35.218Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b42d49276f91b028e3d"
+  },
+  "name": "Nhà hàng Điện Biên Phủ",
+  "region": "north",
+  "address": "56 Điện Biên Phủ, Hồng Bàng, Hải Phòng",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:54:42.248Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:54:42.248Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b47d49276f91b028e3f"
+  },
+  "name": "Nhà hàng Bạch Đằng",
+  "region": "central",
+  "address": "34 Bạch Đằng, Hải Châu, Đà Nẵng",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:54:47.637Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:54:47.637Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b4dd49276f91b028e41"
+  },
+  "name": "Nhà hàng Trần Phú",
+  "region": "central",
+  "address": "78 Trần Phú, Hội An, Quảng Nam",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:54:53.469Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:54:53.469Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b52d49276f91b028e43"
+  },
+  "name": "Nhà hàng Nguyễn Huệ",
+  "region": "central",
+  "address": "145 Nguyễn Huệ, TP. Huế",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:54:58.865Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:54:58.865Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b58d49276f91b028e45"
+  },
+  "name": "Nhà hàng Lê Lợi",
+  "region": "south",
+  "address": "45 Lê Lợi, Quận 1, TP. Hồ Chí Minh",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:55:04.312Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:55:04.312Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b5dd49276f91b028e47"
+  },
+  "name": "Nhà hàng Võ Văn Kiệt",
+  "region": "south",
+  "address": "12 Võ Văn Kiệt, Quận 5, TP. Hồ Chí Minh",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:55:09.763Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:55:09.763Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b63d49276f91b028e49"
+  },
+  "name": "Nhà hàng Nguyễn Trãi",
+  "region": "south",
+  "address": "89 Nguyễn Trãi, Quận 5, TP. Hồ Chí Minh",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:55:15.514Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:55:15.514Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "68da3b68d49276f91b028e4b"
+  },
+  "name": "Nhà hàng Hai Bà Trưng",
+  "region": "south",
+  "address": "23 Hai Bà Trưng, Ninh Kiều, Cần Thơ",
+  "createdBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "updatedBy": {
+    "$oid": "68d7e3a442608b7dd2ae2098"
+  },
+  "createdAt": {
+    "$date": "2025-09-29T07:55:20.905Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-29T07:55:20.905Z"
+  },
+  "__v": 0
+}]
