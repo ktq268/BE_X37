@@ -1,11 +1,20 @@
 import mongoose from "mongoose";
 
-const tableSchema = new mongoose.Schema({
-  tableNumber: { type: Number, required: true, unique: true },
-  capacity: { type: Number, required: true },
-  location: { type: String }, // khu VIP, tầng 1, ngoài trời...
-  status: { type: String, enum: ["available", "reserved"], default: "available" },
-  facility: { type: mongoose.Schema.Types.ObjectId, ref: 'Facility', required: true } // Thêm trường facility
-}, { timestamps: true });
+const TableSchema = new mongoose.Schema(
+  {
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
+    },
+    tableNumber: { type: Number, required: true },
+    capacity: { type: Number, required: true, min: 1 },
+    type: { type: String, enum: ["vip", "normal"], default: "normal" },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model("Table", tableSchema);
+const Table = mongoose.model("Table", TableSchema);
+export default Table;
