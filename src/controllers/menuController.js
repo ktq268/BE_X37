@@ -1,25 +1,16 @@
 import MenuItem from "../models/MenuItemModel.js";
 
-// Public: list by category or search
+// Public: list by category or search (no pagination)
 export const listMenu = async (req, res) => {
   try {
-    const { category, q, page = 1, limit = 20 } = req.query;
+    const { category, q } = req.query;
     const filter = { isAvailable: true };
     if (category) filter.category = category;
     if (q) filter.name = { $regex: q, $options: "i" };
-    const skip = (Number(page) - 1) * Number(limit);
-    const [items, total] = await Promise.all([
-      MenuItem.find(filter)
-        .sort({ name: 1 })
-        .skip(skip)
-        .limit(Number(limit))
-        .lean(),
-      MenuItem.countDocuments(filter),
-    ]);
-    res.json({
-      items,
-      pagination: { page: Number(page), limit: Number(limit), total },
-    });
+
+    const items = await MenuItem.find(filter).sort({ name: 1 }).lean();
+
+    res.json({ items });
   } catch (err) {
     console.error("[menu][listMenu]", err.message);
     res.status(500).send("Server error");
@@ -39,14 +30,9 @@ export const getMenuItem = async (req, res) => {
   }
 };
 
-// Public: full list with pagination (max 9 per page)
+// Public: full list grouped by category (no pagination)
 export const listFullMenu = async (req, res) => {
   try {
-    // 1. **Bỏ qua Phân trang theo limit/skip ở đây**
-    //    vì Aggregation $group không dễ kết hợp với phân trang item
-    //    Nếu bạn muốn phân trang theo nhóm (category), cần logic phức tạp hơn.
-    //    Nếu chỉ muốn lấy FULL MENU đã nhóm (Front-end sẽ tự handle limit/pagination)
-
     // Đảm bảo chỉ lấy các món ăn có sẵn
     const filter = { isAvailable: true };
 
@@ -60,11 +46,11 @@ export const listFullMenu = async (req, res) => {
           items: { $push: "$$ROOT" }, // Đưa toàn bộ tài liệu (món ăn) vào mảng 'items'
         },
       },
-      // 3. (Tùy chọn) Sắp xếp các nhóm theo tên category
+      // 3. Sắp xếp các nhóm theo tên category
       {
         $sort: { _id: 1 }, // Sắp xếp theo tên category
       },
-      // 4. (Tùy chọn) Định dạng lại kết quả để khớp với mong đợi của FE
+      // 4. Định dạng lại kết quả để khớp với mong đợi của FE
       {
         $project: {
           _id: 0, // Loại bỏ trường _id của nhóm
