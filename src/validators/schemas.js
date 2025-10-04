@@ -81,3 +81,60 @@ export const availableQuerySchema = yup.object({
     .min(0)
     .default(0),
 });
+
+// Global menu validators
+export const menuPublicListQuerySchema = yup.object({
+  category: yup.string().trim().optional(),
+  q: yup.string().trim().optional(),
+  page: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .default(1),
+  limit: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .max(100)
+    .default(20),
+});
+
+export const menuDetailParamSchema = yup.object({
+  id: yup.string().trim().required(),
+});
+
+export const menuCreateSchema = yup.object({
+  name: yup.string().trim().required(),
+  description: yup.string().trim().optional(),
+  price: yup.number().min(0).required(),
+  category: yup.string().trim().required(),
+  imageUrl: yup.string().trim().url().optional(),
+  isAvailable: yup.boolean().optional(),
+});
+
+export const menuUpdateSchema = yup.object({
+  name: yup.string().trim().optional(),
+  description: yup.string().trim().optional(),
+  price: yup.number().min(0).optional(),
+  category: yup.string().trim().optional(),
+  imageUrl: yup.string().trim().url().optional(),
+  isAvailable: yup.boolean().optional(),
+});
+
+export const menuFullListQuerySchema = yup.object({
+  page: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .default(1),
+  limit: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .max(9)
+    .default(9),
+});
