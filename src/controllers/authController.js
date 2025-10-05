@@ -9,10 +9,13 @@ export const register = async (req, res) => {
   const { username, email, password, role } = req.body;
 
   try {
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'username, email and password are required' });
+    }
     let user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ msg: 'User already exists' });
+      return res.status(400).json({ message: 'User already exists' });
     }
 
     user = new User({
@@ -37,7 +40,7 @@ export const register = async (req, res) => {
     res.status(201).json(userInfo); // 201: Created
   } catch (err) {
     console.error('Error in register:', err.message);
-    res.status(500).send('Server error');
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -48,16 +51,19 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    if (!email || !password) {
+      return res.status(400).json({ message: 'email and password are required' });
+    }
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ msg: 'Invalid Credentials' });
+      return res.status(400).json({ message: 'Invalid Credentials' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ msg: 'Invalid Credentials' });
+      return res.status(400).json({ message: 'Invalid Credentials' });
     }
 
     const payload = {
@@ -79,6 +85,6 @@ export const login = async (req, res) => {
     );
   } catch (err) {
     console.error('Error in login:', err.message);
-    res.status(500).send('Server error');
+    res.status(500).json({ message: 'Server error' });
   }
 };
