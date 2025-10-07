@@ -96,60 +96,56 @@ export const listTablesWithStatus = async (req, res) => {
     let bookings = [];
     let blocks = [];
 
-    if (date && time) {
+    if (date) {
       const tableIds = tables.map((t) => t._id);
-        
-      // Chuẩn hóa date và time cho chắc chắn
+    
       const normalizedDate = date.length === 10 ? date : date.slice(0, 10); // YYYY-MM-DD
-      const normalizedTime = time.length === 5 ? time : time.slice(0, 5);   // HH:mm
-        
+    
       bookings = await Booking.find({ 
         tableId: { $in: tableIds }, 
         date: normalizedDate,
-        time: normalizedTime
       }).lean();
     
       blocks = await TableBlock.find({ 
         tableId: { $in: tableIds }, 
         date: normalizedDate,
-        time: normalizedTime
       }).lean();
     
-      console.log("Normalized query:", normalizedDate, normalizedTime);
+      console.log("Normalized query:", normalizedDate);
       console.log("Bookings matched:", bookings);
       console.log("Blocks matched:", blocks);
     }
+    
 
     const reservedSet = new Set(
       bookings
         .filter((b) => ["pending", "confirmed"].includes(b.status))
-        .map((b) => String(b.tableId))
+        .map((b) => (b.tableId).toString())
     );
 
     const occupiedSet = new Set(
       bookings
         .filter((b) => b.status === "seated")
-        .map((b) => String(b.tableId))
+        .map((b) => (b.tableId).toString())
     );
 
     const blockedSet = new Set(blocks.map((b) => String(b.tableId)));
 
     const result = tables.map((t) => {
-      // mặc định lấy status trong DB
-      let computedStatus = t.status || "available";
+      let computedStatus = "available"; // reset mặc định
 
       // ghi đè theo booking/block
-      if (blockedSet.has(String(t._id))) {
+      if (blockedSet.has(t._id.toString())) {
         computedStatus = "blocked";
-      } else if (occupiedSet.has(String(t._id))) {
+      } else if (occupiedSet.has(t._id.toString())) {
         computedStatus = "occupied";
-      } else if (reservedSet.has(String(t._id))) {
+      } else if (reservedSet.has(t._id.toString())) {
         computedStatus = "reserved";
-      }
+      }      
 
       return {
-        id: String(t._id),
-        restaurantId: String(t.restaurantId),
+        id: t._id.toString(),
+        restaurantId: t.restaurantId.toString(),
         tableNumber: t.tableNumber,
         capacity: t.capacity,
         type: t.type,
