@@ -10,7 +10,7 @@ const BookingSchema = new mongoose.Schema(
     tableId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Table",
-      required: true,
+      required: false, // Không bắt buộc khi tạo booking
     },
     date: { type: String, required: true }, // YYYY-MM-DD
     time: { type: String, required: true }, // HH:mm
@@ -19,6 +19,12 @@ const BookingSchema = new mongoose.Schema(
     note: { type: String },
     customerName: { type: String, required: true, trim: true },
     customerPhone: { type: String, required: true, trim: true },
+    customerEmail: { type: String, required: true, trim: true },
+    status: {
+      type: String,
+      enum: ["pending", "confirmed", "seated", "completed", "cancelled", "no_show"],
+      default: "pending",
+    },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
