@@ -88,3 +88,25 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// @desc    Get current user info from token
+// @route   GET /api/auth/me
+// @access  Private
+export const getCurrentUser = async (req, res) => {
+  try {
+    // req.user is set by auth middleware: { id, role }
+    if (!req.user?.id) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.json(user);
+  } catch (err) {
+    console.error('Error in getCurrentUser:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
