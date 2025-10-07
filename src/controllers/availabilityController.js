@@ -13,6 +13,14 @@ export const getAvailableTables = async (req, res) => {
       adults = 0,
       children = 0,
     } = req.body;
+    console.log("API getAvailableTables query:", {
+      region,
+      restaurantId,
+      date,
+      time,
+      adults,
+      children
+    });
 
     if (!region) return res.status(400).json({ message: "region is required" });
     if (!date) return res.status(400).json({ message: "date is required" });

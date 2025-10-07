@@ -25,9 +25,16 @@ export const tableUpdateSchema = yup.object({
   type: yup.string().oneOf(["vip", "normal"]).optional(),
 });
 
+export const tableStatusUpdateSchema = yup.object({
+  status: yup
+    .string()
+    .oneOf(["available", "reserved", "occupied", "blocked"]) 
+    .required(),
+});
+
 export const bookingCreateSchema = yup.object({
   restaurantId: yup.string().trim().required(),
-  tableId: yup.string().trim().required(),
+  tableId: yup.string().trim().optional(), // Không bắt buộc
   date: yup
     .string()
     .matches(/^\d{4}-\d{2}-\d{2}$/)
@@ -41,6 +48,14 @@ export const bookingCreateSchema = yup.object({
   note: yup.string().trim().optional(),
   customerName: yup.string().trim().required(),
   customerPhone: yup.string().trim().required(),
+  customerEmail: yup.string().trim().email().required(),
+});
+
+export const bookingStatusUpdateSchema = yup.object({
+  status: yup
+    .string()
+    .oneOf(["pending", "confirmed", "seated", "completed", "cancelled", "no_show"]) 
+    .required(),
 });
 
 export const tableBlockCreateSchema = yup.object({
@@ -81,3 +96,4 @@ export const availableQuerySchema = yup.object({
     .min(0)
     .default(0),
 });
+
