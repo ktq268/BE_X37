@@ -1,0 +1,258 @@
+[
+  {
+    "name": "Beef Wellington",
+    "description": "Thịt bò Wellington cổ điển với nấm duxelles, gan ngỗng và bánh pastry vàng giòn",
+    "price": 450000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Grilled Salmon",
+    "description": "Cá hồi nướng với sốt hollandaise, rau củ nướng và khoai tây nghiền",
+    "price": 320000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Ribeye Steak",
+    "description": "Bít tết ribeye 300g với sốt tiêu đen, khoai tây chiên và salad",
+    "price": 380000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Lobster Thermidor",
+    "description": "Tôm hùm Thermidor với sốt phô mai, nấm và bánh mì nướng",
+    "price": 520000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Duck Confit",
+    "description": "Vịt confit với khoai tây chiên kiểu Pháp và salad xanh",
+    "price": 280000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Pasta Carbonara",
+    "description": "Mì Ý Carbonara truyền thống với pancetta, trứng và phô mai Pecorino",
+    "price": 180000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Risotto ai Funghi",
+    "description": "Risotto nấm với gạo Arborio, nấm porcini và phô mai Parmigiano",
+    "price": 220000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Chicken Cordon Bleu",
+    "description": "Gà Cordon Bleu với phô mai và giăm bông, sốt béchamel",
+    "price": 250000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Lamb Rack",
+    "description": "Sườn cừu nướng với sốt bạc hà, rau củ nướng và couscous",
+    "price": 350000,
+    "category": "Món Chính",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Phở Bò Tái",
+    "description": "Phở bò tái thơm ngon với thịt bò tái mềm, bánh phở dai, nước dùng đậm đà",
+    "price": 120000,
+    "category": "Món Á",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Sushi Platter",
+    "description": "Đĩa sushi tổng hợp với cá hồi, cá ngừ, tôm và cuộn California",
+    "price": 280000,
+    "category": "Món Á",
+    "imageUrl": "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Pad Thai",
+    "description": "Mì Pad Thai Thái Lan với tôm, đậu phụ và rau củ tươi",
+    "price": 150000,
+    "category": "Món Á",
+    "imageUrl": "https://images.unsplash.com/photo-1559847844-5315695dadae?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Korean BBQ Beef",
+    "description": "Thịt bò nướng Hàn Quốc với kimchi, cơm trắng và rau sống",
+    "price": 200000,
+    "category": "Món Á",
+    "imageUrl": "https://images.unsplash.com/photo-1563379091339-03246963d4b0?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Caesar Salad",
+    "description": "Salad Caesar với rau xà lách, phô mai Parmigiano, bánh mì crouton và sốt Caesar",
+    "price": 120000,
+    "category": "Khai Vị",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Escargot",
+    "description": "Ốc sên nướng với bơ tỏi và rau mùi tây",
+    "price": 180000,
+    "category": "Khai Vị",
+    "imageUrl": "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Foie Gras",
+    "description": "Gan ngỗng với bánh mì nướng và sốt quả mọng",
+    "price": 250000,
+    "category": "Khai Vị",
+    "imageUrl": "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Bruschetta",
+    "description": "Bánh mì nướng với cà chua tươi, basil và phô mai mozzarella",
+    "price": 100000,
+    "category": "Khai Vị",
+    "imageUrl": "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Oysters Rockefeller",
+    "description": "Hàu nướng với rau chân vịt, phô mai và sốt hollandaise",
+    "price": 220000,
+    "category": "Khai Vị",
+    "imageUrl": "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "French Onion Soup",
+    "description": "Súp hành tây kiểu Pháp với phô mai Gruyère và bánh mì nướng",
+    "price": 120000,
+    "category": "Súp",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Lobster Bisque",
+    "description": "Súp tôm hùm kem với cognac và crème fraîche",
+    "price": 180000,
+    "category": "Súp",
+    "imageUrl": "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Tomato Basil Soup",
+    "description": "Súp cà chua với basil tươi và phô mai parmesan",
+    "price": 100000,
+    "category": "Súp",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Red Wine",
+    "description": "Rượu vang đỏ Bordeaux, hương vị đậm đà và phức tạp",
+    "price": 150000,
+    "category": "Đồ Uống",
+    "imageUrl": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "White Wine",
+    "description": "Rượu vang trắng Chardonnay, hương vị tươi mát và thanh khiết",
+    "price": 120000,
+    "category": "Đồ Uống",
+    "imageUrl": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Champagne",
+    "description": "Champagne Dom Pérignon, bọt mịn và hương vị tinh tế",
+    "price": 800000,
+    "category": "Đồ Uống",
+    "imageUrl": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Craft Beer",
+    "description": "Bia thủ công IPA với hương vị hoa bia đậm đà",
+    "price": 80000,
+    "category": "Đồ Uống",
+    "imageUrl": "https://images.unsplash.com/photo-1608270586200-8b4c2c4a3b8c?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Espresso",
+    "description": "Cà phê Espresso Ý đậm đà và thơm ngon",
+    "price": 50000,
+    "category": "Đồ Uống",
+    "imageUrl": "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Cappuccino",
+    "description": "Cappuccino với kem sữa mịn và bột cacao",
+    "price": 60000,
+    "category": "Đồ Uống",
+    "imageUrl": "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Tiramisu",
+    "description": "Bánh Tiramisu Ý với cà phê, mascarpone và cacao",
+    "price": 120000,
+    "category": "Tráng Miệng",
+    "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Crème Brûlée",
+    "description": "Crème Brûlée với lớp caramel giòn và kem vani mịn",
+    "price": 100000,
+    "category": "Tráng Miệng",
+    "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Chocolate Soufflé",
+    "description": "Soufflé sô cô la nóng với kem vani và quả mọng",
+    "price": 150000,
+    "category": "Tráng Miệng",
+    "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Cheesecake",
+    "description": "Bánh cheesecake New York với sốt quả mọng",
+    "price": 110000,
+    "category": "Tráng Miệng",
+    "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
+    "isAvailable": true
+  },
+  {
+    "name": "Profiteroles",
+    "description": "Profiteroles với kem vani và sô cô la nóng",
+    "price": 130000,
+    "category": "Tráng Miệng",
+    "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
+    "isAvailable": true
+  }
+]
