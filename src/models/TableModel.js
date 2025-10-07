@@ -10,6 +10,11 @@ const TableSchema = new mongoose.Schema(
     tableNumber: { type: Number, required: true },
     capacity: { type: Number, required: true, min: 1 },
     type: { type: String, enum: ["vip", "normal"], default: "normal" },
+    status: {
+      type: String,
+      enum: ["available", "reserved", "occupied", "blocked"],
+      default: "available",
+    },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
@@ -17,4 +22,5 @@ const TableSchema = new mongoose.Schema(
 );
 
 const Table = mongoose.model("Table", TableSchema);
+TableSchema.index({ restaurantId: 1, tableNumber: 1 }, { unique: true });
 export default Table;

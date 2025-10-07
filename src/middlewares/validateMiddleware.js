@@ -9,8 +9,16 @@ export const validate =
         abortEarly: false,
         stripUnknown: true,
       });
-      if (source === "query") req.query = validated;
-      else req.body = validated;
+      if (source === "query") {
+        // Avoid reassigning req.query (read-only getter in Express 5); mutate instead
+        Object.keys(req.query || {}).forEach((k) => {
+          // delete existing keys to not keep stale values
+          delete req.query[k];
+        });
+        Object.assign(req.query, validated);
+      } else {
+        req.body = validated;
+      }
       next();
     } catch (err) {
       if (err instanceof ValidationError) {
