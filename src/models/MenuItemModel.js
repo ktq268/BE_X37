@@ -6,7 +6,7 @@ const MenuItemSchema = new mongoose.Schema(
     description: { type: String, trim: true },
     price: { type: Number, required: true, min: 0 },
     category: { type: String, required: true, trim: true, index: true },
-    imageUrl: { type: String, trim: true },
+    imageUrl: { type: [String], trim: true },
     isAvailable: { type: Boolean, default: true, index: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

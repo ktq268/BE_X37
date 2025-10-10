@@ -132,17 +132,35 @@ export const menuCreateSchema = yup.object({
   description: yup.string().trim().optional(),
   price: yup.number().min(0).required(),
   category: yup.string().trim().required(),
-  imageUrl: yup.string().trim().url().optional(),
+  imageUrl: yup.array().of(yup.string().trim().url()).optional(),
   isAvailable: yup.boolean().optional(),
 });
 
 export const menuUpdateSchema = yup.object({
-  name: yup.string().trim().optional(),
-  description: yup.string().trim().optional(),
-  price: yup.number().min(0).optional(),
-  category: yup.string().trim().optional(),
-  imageUrl: yup.string().trim().url().optional(),
-  isAvailable: yup.boolean().optional(),
+  name: yup
+    .string()
+    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
+    .nullable()
+    .optional(),
+  description: yup
+    .string()
+    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
+    .nullable()
+    .optional(),
+  price: yup.number().min(0).nullable().optional(),
+  category: yup
+    .string()
+    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
+    .nullable()
+    .optional(),
+  imageUrl: yup
+    .array()
+    .of(yup.string().trim().url())
+    .nullable()
+    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
+    .nullable()
+    .optional(),
+  isAvailable: yup.boolean().nullable().optional(),
 });
 
 export const menuFullListQuerySchema = yup.object({

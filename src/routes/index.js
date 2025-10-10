@@ -6,6 +6,7 @@ import bookingRouter from "./bookingRouter.js";
 import tableBlockRouter from "./tableBlockRouter.js";
 import availableRouter from "./availableRouter.js";
 import menuRouter from "./menuRouter.js";
+import uploadImage from "./uploadImageRouter.js";
 
 const apiRouter = express.Router();
 
@@ -17,5 +18,6 @@ apiRouter.use("/bookings", bookingRouter);
 apiRouter.use("/table-blocks", tableBlockRouter);
 apiRouter.use("/available-tables", availableRouter);
 apiRouter.use("/menu", menuRouter);
+apiRouter.use("/upload-image", uploadImage);
 
 export default apiRouter;
