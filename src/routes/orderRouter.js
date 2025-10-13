@@ -31,7 +31,7 @@ router.get(
   "/",
   auth,
   requireRoles("staff", "admin"),
-  validate(staffOrderListQuerySchema, "query"),
+  // validate(staffOrderListQuerySchema, "query"),
   staffListOrders
 );
 router.get(
