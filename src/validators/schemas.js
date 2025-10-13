@@ -137,30 +137,12 @@ export const menuCreateSchema = yup.object({
 });
 
 export const menuUpdateSchema = yup.object({
-  name: yup
-    .string()
-    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
-    .nullable()
-    .optional(),
-  description: yup
-    .string()
-    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
-    .nullable()
-    .optional(),
-  price: yup.number().min(0).nullable().optional(),
-  category: yup
-    .string()
-    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
-    .nullable()
-    .optional(),
-  imageUrl: yup
-    .array()
-    .of(yup.string().trim().url())
-    .nullable()
-    .transform((v) => (typeof v === "string" ? v.trim() : undefined))
-    .nullable()
-    .optional(),
-  isAvailable: yup.boolean().nullable().optional(),
+  name: yup.string().optional(),
+  description: yup.string().optional(),
+  price: yup.number().min(0).optional(),
+  category: yup.string().optional(),
+  imageUrl: yup.array().of(yup.string().url()).optional(),
+  isAvailable: yup.boolean().optional(),
 });
 
 export const menuFullListQuerySchema = yup.object({
