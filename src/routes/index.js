@@ -6,6 +6,8 @@ import bookingRouter from "./bookingRouter.js";
 import tableBlockRouter from "./tableBlockRouter.js";
 import availableRouter from "./availableRouter.js";
 import menuRouter from "./menuRouter.js";
+import cartRouter from "./cartRouter.js";
+import orderRouter from "./orderRouter.js";
 
 const apiRouter = express.Router();
 
@@ -17,5 +19,7 @@ apiRouter.use("/bookings", bookingRouter);
 apiRouter.use("/table-blocks", tableBlockRouter);
 apiRouter.use("/available-tables", availableRouter);
 apiRouter.use("/menu", menuRouter);
+apiRouter.use("/cart", cartRouter);
+apiRouter.use("/orders", orderRouter);
 
 export default apiRouter;
