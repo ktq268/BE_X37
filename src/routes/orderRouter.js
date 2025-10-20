@@ -44,7 +44,7 @@ router.put(
   "/:id/status",
   auth,
   requireRoles("staff", "admin"),
-  validate(staffOrderStatusUpdateSchema, "body"),
+  // validate(staffOrderStatusUpdateSchema, "body"),
   staffUpdateOrderStatus
 );
 

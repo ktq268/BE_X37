@@ -124,3 +124,15 @@ export const sendCompletedEmail = async (to, { customerName, date, time, tableNu
   };
   return transporter.sendMail(mailOptions);
 };
+
+export const sendEmail = async ({ to, subject, text, html, attachments }) => {
+  const mailOptions = {
+    from: fromIdentity,
+    to,
+    subject,
+    text,
+    html,
+    attachments,
+  };
+  return transporter.sendMail(mailOptions);
+};

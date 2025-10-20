@@ -8,6 +8,7 @@ import availableRouter from "./availableRouter.js";
 import menuRouter from "./menuRouter.js";
 import cartRouter from "./cartRouter.js";
 import orderRouter from "./orderRouter.js";
+import invoiceRouter from "./invoiceRouter.js";
 
 const apiRouter = express.Router();
 
@@ -21,5 +22,6 @@ apiRouter.use("/available-tables", availableRouter);
 apiRouter.use("/menu", menuRouter);
 apiRouter.use("/cart", cartRouter);
 apiRouter.use("/orders", orderRouter);
+apiRouter.use("/invoices", invoiceRouter);
 
 export default apiRouter;
