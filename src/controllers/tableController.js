@@ -85,67 +85,79 @@ export const deleteTable = async (req, res) => {
 
 export const listTablesWithStatus = async (req, res) => {
   try {
-    const { restaurantId, date, time } = req.query;
-
+    const { restaurantId, date } = req.query;
     const filter = {};
     if (restaurantId) filter.restaurantId = restaurantId;
 
     const tables = await Table.find(filter).lean();
     if (!tables.length) return res.json([]);
 
-    let bookings = [];
-    let blocks = [];
+    // 🕓 Xác định ngày được chọn hoặc hôm nay
+    const today = new Date().toISOString().slice(0, 10);
+    const normalizedDate =
+      date && date.length === 10 ? date : date ? date.slice(0, 10) : today;
 
-    if (date) {
-      const tableIds = tables.map((t) => t._id);
-    
-      const normalizedDate = date.length === 10 ? date : date.slice(0, 10); // YYYY-MM-DD
-    
-      bookings = await Booking.find({ 
-        tableId: { $in: tableIds }, 
+    const tableIds = tables.map((t) => t._id);
+
+    // 🔎 Chỉ lấy booking + block trong NGÀY ĐÓ
+    const [bookings, blocks] = await Promise.all([
+      Booking.find({
+        tableId: { $in: tableIds },
         date: normalizedDate,
-      }).lean();
-    
-      blocks = await TableBlock.find({ 
-        tableId: { $in: tableIds }, 
+      }).lean(),
+      TableBlock.find({
+        tableId: { $in: tableIds },
         date: normalizedDate,
-      }).lean();
-    
-      console.log("Normalized query:", normalizedDate);
-      console.log("Bookings matched:", bookings);
-      console.log("Blocks matched:", blocks);
-    }
-    
+      }).lean(),
+    ]);
+
+    console.log(`[table][listWithStatus] date=${normalizedDate}, found ${bookings.length} bookings, ${blocks.length} blocks`);
+    console.log(`[table][listWithStatus] bookings:`, bookings.map(b => ({
+      id: b._id,
+      tableId: b.tableId,
+      status: b.status,
+      date: b.date,
+      time: b.time
+    })));
 
     const reservedSet = new Set(
       bookings
         .filter((b) => ["pending", "confirmed"].includes(b.status))
-        .map((b) => (b.tableId).toString())
+        .map((b) => String(b.tableId))
     );
 
     const occupiedSet = new Set(
       bookings
         .filter((b) => b.status === "seated")
-        .map((b) => (b.tableId).toString())
+        .map((b) => String(b.tableId))
     );
 
     const blockedSet = new Set(blocks.map((b) => String(b.tableId)));
 
-    const result = tables.map((t) => {
-      let computedStatus = "available"; // reset mặc định
+    console.log(`[table][listWithStatus] reservedSet:`, Array.from(reservedSet));
+    console.log(`[table][listWithStatus] occupiedSet:`, Array.from(occupiedSet));
+    console.log(`[table][listWithStatus] blockedSet:`, Array.from(blockedSet));
 
-      // ghi đè theo booking/block
+    // Tính trạng thái bàn
+    const result = tables.map((t) => {
+      let computedStatus = "available"; // Mặc định là available
+      
+      // Kiểm tra trạng thái từ booking/block trước (trạng thái động)
       if (blockedSet.has(t._id.toString())) {
         computedStatus = "blocked";
       } else if (occupiedSet.has(t._id.toString())) {
         computedStatus = "occupied";
       } else if (reservedSet.has(t._id.toString())) {
         computedStatus = "reserved";
-      }      
-
+      }
+      // Nếu không có booking/block nào, sử dụng trạng thái của bàn
+      else {
+        computedStatus = t.status || "available";
+      }
+    
       return {
-        id: t._id.toString(),
-        restaurantId: t.restaurantId.toString(),
+        id: String(t._id),
+        restaurantId: String(t.restaurantId),
         tableNumber: t.tableNumber,
         capacity: t.capacity,
         type: t.type,
@@ -163,24 +175,73 @@ export const listTablesWithStatus = async (req, res) => {
 };
 
 
-
 export const updateTableStatus = async (req, res) => {
   try {
+    console.log(`[table][updateTableStatus] received request for table=${req.params.id} with status=${req.body.status} and date=${req.body.date}`);
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, date } = req.body;
     const allowed = ["available", "reserved", "occupied", "blocked"];
+
     if (!allowed.includes(status)) {
       return res.status(400).json({ message: "Invalid table status" });
     }
+
+    const targetDate = date || new Date().toISOString().slice(0, 10);
+
+    // 🔥 Nếu staff đổi sang "available" → hủy tất cả booking trong NGÀY đó
+    if (status === "available") {
+      console.log(`[table][status-update] Attempting to cancel bookings for table=${id} on ${targetDate} with status in ['pending', 'confirmed']`);
+      const cancelled = await Booking.updateMany(
+        {
+          tableId: id,
+          date: targetDate, // Fixed: changed from 'today' to 'targetDate'
+          status: { $in: ["pending", "confirmed"] },
+        },
+        { $set: { status: "cancelled", updatedAt: new Date() } }
+      );
+      console.log(
+        `[table][status-update] cancelled ${cancelled.modifiedCount} bookings for table=${id} on ${targetDate}`
+      );
+    }
+    
+    // 🆕 Nếu staff đổi sang "occupied" → cập nhật booking thành "seated"
+    if (status === "occupied") {
+      // Tìm booking "confirmed" cho bàn này trong ngày hôm nay
+      const confirmedBooking = await Booking.findOne({
+        tableId: id,
+        date: targetDate,
+        status: "confirmed"
+      });
+      
+      if (confirmedBooking) {
+        // Cập nhật booking thành "seated"
+        await Booking.findByIdAndUpdate(
+          confirmedBooking._id,
+          { status: "seated", updatedAt: new Date(), updatedBy: req.user?.id }
+        );
+        console.log(
+          `[table][status-update] updated booking ${confirmedBooking._id} to \"seated\" for table=${id} on ${targetDate}`
+        );
+      }
+    }
+
     const updated = await Table.findByIdAndUpdate(
       id,
       { status, updatedBy: req.user?.id },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ message: "Table not found" });
-    res.json(updated);
+
+    if (!updated)
+      return res.status(404).json({ message: "Table not found" });
+
+    res.json({
+      message: "Table status updated successfully",
+      table: updated,
+    });
   } catch (err) {
     console.error("Error updateTableStatus:", err.message);
-    res.status(400).json({ message: "Update table status failed", error: err.message });
+    res
+      .status(400)
+      .json({ message: "Update table status failed", error: err.message });
   }
 };

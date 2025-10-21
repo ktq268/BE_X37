@@ -7,6 +7,8 @@ import tableBlockRouter from "./tableBlockRouter.js";
 import availableRouter from "./availableRouter.js";
 import menuRouter from "./menuRouter.js";
 import uploadImage from "./uploadImageRouter.js";
+import feedbackRouter from "./feedbackRouter.js";
+import reportRouter from "./reportRouter.js";
 
 const apiRouter = express.Router();
 
@@ -19,5 +21,6 @@ apiRouter.use("/table-blocks", tableBlockRouter);
 apiRouter.use("/available-tables", availableRouter);
 apiRouter.use("/menu", menuRouter);
 apiRouter.use("/upload-image", uploadImage);
-
+apiRouter.use("/feedback", feedbackRouter);
+apiRouter.use("/reports", reportRouter);
 export default apiRouter;
