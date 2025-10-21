@@ -5,6 +5,7 @@ import { bookingCreateSchema, bookingStatusUpdateSchema } from "../validators/sc
 import { auth } from "../middlewares/authMiddleware.js";
 import { staffAuth } from "../middlewares/staffAuthMiddleware.js";
 
+
 const router = express.Router();
 
 // Customer flow

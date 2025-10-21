@@ -39,12 +39,13 @@ export const createBooking = async (req, res) => {
   }
 };
 
-// Tối ưu hóa hàm updateBookingStatus
 export const updateBookingStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, tableId } = req.body;
     const allowed = ["pending", "confirmed", "seated", "completed", "cancelled", "no_show"];
+    
+    console.log(`[booking][updateStatus] id=${id}, status=${status}, tableId=${tableId}`);
     
     if (!allowed.includes(status)) {
       return res.status(400).json({ message: "Invalid booking status" });
@@ -54,12 +55,22 @@ export const updateBookingStatus = async (req, res) => {
     if (!prev) return res.status(404).json({ message: "Booking not found" });
     if (prev.status === status) return res.json(prev);
 
+    console.log(`[booking][updateStatus] prev status=${prev.status} -> new status=${status}`);
+
     // Cập nhật booking
     const updateData = { status, updatedBy: req.user?.id };
     if (tableId) updateData.tableId = tableId;
 
     const updated = await Booking.findByIdAndUpdate(id, updateData, { new: true });
     if (!updated) return res.status(404).json({ message: "Booking not found" });
+    
+    console.log(`[booking][updateStatus] updated successfully: ${JSON.stringify({
+      id: updated._id,
+      status: updated.status,
+      tableId: updated.tableId,
+      date: updated.date,
+      time: updated.time
+    })}`);
     
     // Gửi email thông báo (không chặn luồng chính)
     sendBookingStatusEmail(updated, status);

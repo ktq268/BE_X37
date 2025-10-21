@@ -63,6 +63,7 @@ export const bookingStatusUpdateSchema = yup.object({
       "no_show",
     ])
     .required(),
+  tableId: yup.string().trim().optional(),
 });
 
 export const tableBlockCreateSchema = yup.object({
