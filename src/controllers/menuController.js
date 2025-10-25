@@ -89,9 +89,14 @@ export const createMenuItem = async (req, res) => {
 export const updateMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
+    const body = req.body;
+    if (body.imageUrl && !Array.isArray(body.imageUrl)) {
+      body.imageUrl = [body.imageUrl];
+    }
+
     const updated = await MenuItem.findByIdAndUpdate(
       id,
-      { ...req.body, updatedBy: req.user?.id },
+      { ...body, updatedBy: req.user?.id },
       { new: true }
     );
     if (!updated)
