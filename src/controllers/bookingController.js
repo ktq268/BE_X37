@@ -123,10 +123,34 @@ export const listBookingsByTable = async (req, res) => {
 
 export const getPendingBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({ status: "pending" })
+    const { restaurantId, region } = req.query;
+    
+    // Build filter object
+    const filter = { status: "pending" };
+    
+    // Filter by restaurantId if provided
+    if (restaurantId && restaurantId !== "all") {
+      filter.restaurantId = restaurantId;
+    }
+    
+    // If region is provided, we need to populate restaurant info to filter by region
+    let bookings;
+    if (region && region !== "all") {
+      // First get restaurants in the region
+      const Restaurant = (await import("../models/RestaurantModel.js")).default;
+      const restaurantsInRegion = await Restaurant.find({ region }).select('_id');
+      const restaurantIds = restaurantsInRegion.map(r => r._id);
+      
+      // Filter bookings by restaurants in the region
+      filter.restaurantId = { $in: restaurantIds };
+    }
+    
+    bookings = await Booking.find(filter)
       .sort({ createdAt: -1 })
       .populate('tableId', 'tableNumber')
+      .populate('restaurantId', 'name region address')
       .lean();
+      
     res.json(bookings);
   } catch (err) {
     console.error("Error getPendingBookings:", err.message);

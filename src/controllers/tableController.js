@@ -5,7 +5,6 @@ import TableBlock from "../models/TableBlockModel.js";
 export const createTable = async (req, res) => {
   try {
     if (req.user?.id) {
-      console.log(`[table][create] by user=${req.user.id}`);
     }
     const table = await Table.create({
       ...req.body,
@@ -30,7 +29,6 @@ export const updateTable = async (req, res) => {
   try {
     const { id } = req.params;
     if (req.user?.id) {
-      console.log(`[table][update] id=${id} by user=${req.user.id}`);
     }
     const updated = await Table.findByIdAndUpdate(
       id,
@@ -56,7 +54,6 @@ export const deleteTable = async (req, res) => {
   try {
     const { id } = req.params;
     if (req.user?.id) {
-      console.log(`[table][delete] id=${id} by user=${req.user.id}`);
     }
     // Prevent delete if has bookings or blocks
     const hasBooking = await Booking.exists({ tableId: id });
@@ -87,9 +84,6 @@ export const listTablesWithStatus = async (req, res) => {
   try {
     const { restaurantId, date } = req.query;
 
-    console.log(
-      `[table][listTablesWithStatus] restaurantId=${restaurantId}, date=${date}`
-    );
 
     // Validate restaurantId if provided
     if (restaurantId && restaurantId === "undefined") {
@@ -103,7 +97,6 @@ export const listTablesWithStatus = async (req, res) => {
       filter.restaurantId = restaurantId;
     }
 
-    console.log(`[table][listTablesWithStatus] filter:`, filter);
 
     const tables = await Table.find(filter).lean();
     if (!tables.length) return res.json([]);
@@ -127,19 +120,6 @@ export const listTablesWithStatus = async (req, res) => {
       }).lean(),
     ]);
 
-    console.log(
-      `[table][listWithStatus] date=${normalizedDate}, found ${bookings.length} bookings, ${blocks.length} blocks`
-    );
-    console.log(
-      `[table][listWithStatus] bookings:`,
-      bookings.map((b) => ({
-        id: b._id,
-        tableId: b.tableId,
-        status: b.status,
-        date: b.date,
-        time: b.time,
-      }))
-    );
 
     const reservedSet = new Set(
       bookings
@@ -155,34 +135,35 @@ export const listTablesWithStatus = async (req, res) => {
 
     const blockedSet = new Set(blocks.map((b) => String(b.tableId)));
 
-    console.log(
-      `[table][listWithStatus] reservedSet:`,
-      Array.from(reservedSet)
-    );
-    console.log(
-      `[table][listWithStatus] occupiedSet:`,
-      Array.from(occupiedSet)
-    );
-    console.log(`[table][listWithStatus] blockedSet:`, Array.from(blockedSet));
 
-    // Tính trạng thái bàn
+    // Tính trạng thái bàn dựa trên booking/block trong ngày được chọn
     const result = tables.map((t) => {
-      let computedStatus = "available"; // Mặc định là available
+      let computedStatus = "available"; // Mặc định là available cho mọi ngày
+      let bookingInfo = null;
+      let blockedInfo = null;
 
-      // Kiểm tra trạng thái từ booking/block trước (trạng thái động)
+      // Tìm booking cho bàn này trong ngày được chọn
+      const tableBooking = bookings.find(b => String(b.tableId) === String(t._id));
+      const tableBlock = blocks.find(b => String(b.tableId) === String(t._id));
+
+      // Kiểm tra trạng thái từ booking/block trong ngày được chọn
       if (blockedSet.has(t._id.toString())) {
         computedStatus = "blocked";
+        blockedInfo = tableBlock;
       } else if (occupiedSet.has(t._id.toString())) {
         computedStatus = "occupied";
+        bookingInfo = tableBooking;
       } else if (reservedSet.has(t._id.toString())) {
         computedStatus = "reserved";
+        bookingInfo = tableBooking;
       }
-      // Nếu không có booking/block nào, sử dụng trạng thái của bàn
+      // Nếu không có booking/block nào trong ngày này, bàn sẽ trống
       else {
-        computedStatus = t.status || "available";
+        computedStatus = "available";
       }
 
-      return {
+      const resultTable = {
+        _id: String(t._id),
         id: String(t._id),
         restaurantId: String(t.restaurantId),
         tableNumber: t.tableNumber,
@@ -191,7 +172,22 @@ export const listTablesWithStatus = async (req, res) => {
         status: computedStatus,
         updatedAt: t.updatedAt,
         createdAt: t.createdAt,
+        bookingDate: normalizedDate, // Thêm ngày được chọn
       };
+
+      // Thêm thông tin booking nếu có
+      if (bookingInfo) {
+        resultTable.blockedBy = `${bookingInfo.customerName} - ${bookingInfo.time}`;
+        resultTable.checkInTime = bookingInfo.time;
+        resultTable.orderId = bookingInfo._id;
+      }
+
+      // Thêm thông tin block nếu có
+      if (blockedInfo) {
+        resultTable.blockedBy = blockedInfo.reason || 'Bảo trì';
+      }
+
+      return resultTable;
     });
 
     res.json(result);
@@ -203,9 +199,6 @@ export const listTablesWithStatus = async (req, res) => {
 
 export const updateTableStatus = async (req, res) => {
   try {
-    console.log(
-      `[table][updateTableStatus] received request for table=${req.params.id} with status=${req.body.status} and date=${req.body.date}`
-    );
     const { id } = req.params;
     const { status, date } = req.body;
     const allowed = ["available", "reserved", "occupied", "blocked"];
@@ -216,27 +209,31 @@ export const updateTableStatus = async (req, res) => {
 
     const targetDate = date || new Date().toISOString().slice(0, 10);
 
+    // Kiểm tra bàn có tồn tại không
+    const table = await Table.findById(id);
+    if (!table) return res.status(404).json({ message: "Table not found" });
+
     // 🔥 Nếu staff đổi sang "available" → hủy tất cả booking trong NGÀY đó
     if (status === "available") {
-      console.log(
-        `[table][status-update] Attempting to cancel bookings for table=${id} on ${targetDate} with status in ['pending', 'confirmed']`
-      );
       const cancelled = await Booking.updateMany(
         {
           tableId: id,
-          date: targetDate, // Fixed: changed from 'today' to 'targetDate'
-          status: { $in: ["pending", "confirmed"] },
+          date: targetDate,
+          status: { $in: ["pending", "confirmed", "seated"] },
         },
         { $set: { status: "cancelled", updatedAt: new Date() } }
       );
-      console.log(
-        `[table][status-update] cancelled ${cancelled.modifiedCount} bookings for table=${id} on ${targetDate}`
-      );
+
+      // Xóa tất cả block trong ngày đó
+      await TableBlock.deleteMany({
+        tableId: id,
+        date: targetDate,
+      });
     }
 
     // 🆕 Nếu staff đổi sang "occupied" → cập nhật booking thành "seated"
     if (status === "occupied") {
-      // Tìm booking "confirmed" cho bàn này trong ngày hôm nay
+      // Tìm booking "confirmed" cho bàn này trong ngày được chọn
       const confirmedBooking = await Booking.findOne({
         tableId: id,
         date: targetDate,
@@ -250,23 +247,74 @@ export const updateTableStatus = async (req, res) => {
           updatedAt: new Date(),
           updatedBy: req.user?.id,
         });
-        console.log(
-          `[table][status-update] updated booking ${confirmedBooking._id} to \"seated\" for table=${id} on ${targetDate}`
-        );
       }
     }
 
-    const updated = await Table.findByIdAndUpdate(
-      id,
-      { status, updatedBy: req.user?.id },
-      { new: true }
-    );
+    // 🆕 Nếu staff đổi sang "blocked" → tạo block cho ngày đó
+    if (status === "blocked") {
+      // Xóa block cũ nếu có
+      await TableBlock.deleteMany({
+        tableId: id,
+        date: targetDate,
+      });
 
-    if (!updated) return res.status(404).json({ message: "Table not found" });
+      // Tạo block mới
+      await TableBlock.create({
+        restaurantId: table.restaurantId,
+        tableId: id,
+        date: targetDate,
+        time: "00:00", // Thời gian mặc định cho block cả ngày
+        reason: "Bảo trì",
+        createdBy: req.user?.id,
+      });
+    }
 
+    // 🆕 Nếu staff đổi sang "reserved" → tạo booking mới hoặc cập nhật booking hiện tại
+    if (status === "reserved") {
+      // Xóa block nếu có
+      await TableBlock.deleteMany({
+        tableId: id,
+        date: targetDate,
+      });
+
+      // Tìm booking hiện tại trong ngày
+      const existingBooking = await Booking.findOne({
+        tableId: id,
+        date: targetDate,
+        status: { $in: ["pending", "confirmed"] },
+      });
+
+      if (!existingBooking) {
+        // Tạo booking mới nếu chưa có
+        await Booking.create({
+          restaurantId: table.restaurantId,
+          tableId: id,
+          date: targetDate,
+          time: "12:00", // Thời gian mặc định
+          customerName: "Khách lẻ",
+          customerPhone: "0000000000",
+          customerEmail: "guest@restaurant.com",
+          adults: 1,
+          children: 0,
+          status: "confirmed",
+          createdBy: req.user?.id,
+        });
+      }
+    }
+
+    // Trả về thông tin bàn với trạng thái được tính toán lại
     res.json({
-      message: "Table status updated successfully",
-      table: updated,
+      message: "Table status updated successfully for the selected date",
+      table: {
+        _id: table._id,
+        id: String(table._id),
+        restaurantId: String(table.restaurantId),
+        tableNumber: table.tableNumber,
+        capacity: table.capacity,
+        type: table.type,
+        status: status,
+        bookingDate: targetDate,
+      },
     });
   } catch (err) {
     console.error("Error updateTableStatus:", err.message);

@@ -3,7 +3,6 @@ import TableBlock from "../models/TableBlockModel.js";
 export const createTableBlock = async (req, res) => {
   try {
     if (req.user?.id) {
-      console.log(`[table-block][create] by user=${req.user.id}`);
     }
     const block = await TableBlock.create({
       ...req.body,
@@ -23,7 +22,6 @@ export const deleteTableBlock = async (req, res) => {
   try {
     const { id } = req.params;
     if (req.user?.id) {
-      console.log(`[table-block][delete] id=${id} by user=${req.user.id}`);
     }
     const deleted = await TableBlock.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: "Block not found" });
