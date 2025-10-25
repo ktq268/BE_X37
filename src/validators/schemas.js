@@ -161,3 +161,76 @@ export const menuFullListQuerySchema = yup.object({
     .max(9)
     .default(9),
 });
+
+// Cart & Order validators
+export const cartAddItemSchema = yup.object({
+  menuItemId: yup.string().trim().required(),
+  quantity: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .default(1),
+  notes: yup.string().trim().optional(),
+});
+
+export const cartUpdateItemSchema = yup.object({
+  quantity: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .required(),
+  notes: yup.string().trim().optional(),
+});
+
+export const orderCreateFromCartSchema = yup.object({
+  applyDiscount: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .min(0)
+    .default(0),
+});
+
+// Staff orders
+export const staffOrderListQuerySchema = yup.object({
+  status: yup
+    .string()
+    .oneOf([
+      "pending",
+      "confirmed",
+      "preparing",
+      "ready",
+      "completed",
+      "cancelled",
+    ])
+    .optional(),
+  q: yup.string().trim().optional(),
+  page: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .default(1),
+  limit: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .max(100)
+    .default(20),
+});
+
+export const staffOrderStatusUpdateSchema = yup.object({
+  status: yup
+    .string()
+    .oneOf([
+      "pending",
+      "confirmed",
+      "preparing",
+      "ready",
+      "completed",
+      "cancelled",
+    ])
+    .required(),
+});

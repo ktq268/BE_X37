@@ -9,6 +9,9 @@ import menuRouter from "./menuRouter.js";
 import uploadImage from "./uploadImageRouter.js";
 import feedbackRouter from "./feedbackRouter.js";
 import reportRouter from "./reportRouter.js";
+import cartRouter from "./cartRouter.js";
+import orderRouter from "./orderRouter.js";
+import invoiceRouter from "./invoiceRouter.js";
 
 const apiRouter = express.Router();
 
@@ -23,4 +26,8 @@ apiRouter.use("/menu", menuRouter);
 apiRouter.use("/upload-image", uploadImage);
 apiRouter.use("/feedback", feedbackRouter);
 apiRouter.use("/reports", reportRouter);
+apiRouter.use("/cart", cartRouter);
+apiRouter.use("/orders", orderRouter);
+apiRouter.use("/invoices", invoiceRouter);
+
 export default apiRouter;
