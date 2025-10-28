@@ -53,32 +53,49 @@ export const updateTable = async (req, res) => {
 export const deleteTable = async (req, res) => {
   try {
     const { id } = req.params;
-    if (req.user?.id) {
-    }
-    // Prevent delete if has bookings or blocks
-    const hasBooking = await Booking.exists({ tableId: id });
-    if (hasBooking) {
-      return res
-        .status(409)
-        .json({ message: "Cannot delete: table has bookings" });
-    }
-    const hasBlock = await TableBlock.exists({ tableId: id });
-    if (hasBlock) {
-      return res
-        .status(409)
-        .json({ message: "Cannot delete: table has blocks" });
+
+    // Kiểm tra bàn có booking đang hoạt động không
+    const activeBooking = await Booking.exists({
+      tableId: id,
+      status: { $in: ["pending", "confirmed", "seated"] },
+    });
+
+    if (activeBooking) {
+      return res.status(409).json({
+        message: "Không thể xóa bàn vì đang có booking hoạt động.",
+      });
     }
 
+    // Kiểm tra bàn có bị khóa không
+    const hasBlock = await TableBlock.exists({ tableId: id });
+    if (hasBlock) {
+      return res.status(409).json({
+        message: "Không thể xóa bàn vì bàn đang bị khóa.",
+      });
+    }
+
+    // Chỉ xóa các booking đã hủy hoặc hoàn thành
+    await Booking.deleteMany({
+      tableId: id,
+      status: { $in: ["cancelled", "completed"] },
+    });
+
+    // Xóa block nếu có
+    await TableBlock.deleteMany({ tableId: id });
+
+    // Xóa bàn
     const deleted = await Table.findByIdAndDelete(id);
-    if (!deleted) return res.status(404).json({ message: "Table not found" });
-    res.json({ message: "Table deleted" });
+    if (!deleted)
+      return res.status(404).json({ message: "Không tìm thấy bàn." });
+
+    res.json({ message: "Xóa bàn thành công." });
   } catch (err) {
     console.error("Error deleteTable:", err.message);
-    res
-      .status(400)
-      .json({ message: "Delete table failed", error: err.message });
+    res.status(400).json({ message: "Delete table failed", error: err.message });
   }
 };
+
+
 
 export const listTablesWithStatus = async (req, res) => {
   try {
