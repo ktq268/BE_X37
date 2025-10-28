@@ -4,11 +4,10 @@ import MenuItem from "../models/MenuItemModel.js";
 export const listMenu = async (req, res) => {
   try {
     const { category, q } = req.query;
-    const filter = { isAvailable: true };
     if (category) filter.category = category;
     if (q) filter.name = { $regex: q, $options: "i" };
 
-    const items = await MenuItem.find(filter).sort({ name: 1 }).lean();
+    const items = await MenuItem.find().sort({ name: 1 }).lean();
 
     res.json({ items });
   } catch (err) {
@@ -33,34 +32,26 @@ export const getMenuItem = async (req, res) => {
 // Public: full list grouped by category (no pagination)
 export const listFullMenu = async (req, res) => {
   try {
-    // Đảm bảo chỉ lấy các món ăn có sẵn
-    const filter = { isAvailable: true };
 
     const menuGroups = await MenuItem.aggregate([
-      // 1. Lọc các món ăn có sẵn
-      { $match: filter },
-      // 2. Nhóm các món ăn theo trường 'category'
       {
         $group: {
-          _id: "$category", // Nhóm theo giá trị của trường category
-          items: { $push: "$$ROOT" }, // Đưa toàn bộ tài liệu (món ăn) vào mảng 'items'
+          _id: "$category",
+          items: { $push: "$$ROOT" },
         },
       },
-      // 3. Sắp xếp các nhóm theo tên category
       {
-        $sort: { _id: 1 }, // Sắp xếp theo tên category
+        $sort: { _id: 1 },
       },
-      // 4. Định dạng lại kết quả để khớp với mong đợi của FE
       {
         $project: {
-          _id: 0, // Loại bỏ trường _id của nhóm
-          category: { _id: "$_id", name: "$_id" }, // Tạo object category
+          _id: 0,
+          category: { _id: "$_id", name: "$_id" },
           items: 1,
-        },
+        },  
       },
     ]);
 
-    // Trả về mảng các nhóm menu
     res.json(menuGroups);
   } catch (err) {
     console.error("[menu][listFullMenu]", err.message);
