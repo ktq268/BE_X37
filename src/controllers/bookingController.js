@@ -1,7 +1,7 @@
 import Booking from "../models/BookingModel.js";
 import TableBlock from "../models/TableBlockModel.js";
 import Table from "../models/TableModel.js";
-import { sendConfirmationEmail, sendCancelEmail } from "../services/mailService.js";
+import { sendConfirmationEmail, sendCancelEmail, sendPendingEmail, sendCompletedEmail } from "../services/mailService.js";
 
 export const createBooking = async (req, res) => {
   try {
@@ -9,13 +9,40 @@ export const createBooking = async (req, res) => {
     
     // Nếu có tableId thì kiểm tra conflict, nếu không thì chỉ tạo booking chung
     if (req.body.tableId) {
-      const exists = await Booking.findOne({ restaurantId, tableId: req.body.tableId, date, time });
-      if (exists) {
-        return res
-          .status(400)
-          .json({ message: "Table already booked at this time" });
+      // Tìm mọi booking cùng slot thời gian
+      const existing = await Booking.findOne({
+        restaurantId,
+        tableId: req.body.tableId,
+        date,
+        time,
+      });
+
+      if (existing) {
+        // Nếu booking đang hiệu lực => chặn tạo mới
+        if (["pending", "confirmed", "seated"].includes(existing.status)) {
+          return res
+            .status(400)
+            .json({ message: "Table already booked at this time" });
+        }
+
+        // Nếu booking đã cancelled/completed/no_show => tái sử dụng bằng cách cập nhật
+        const updated = await Booking.findByIdAndUpdate(
+          existing._id,
+          {
+            ...req.body,
+            status: "pending",
+            updatedBy: req.user?.id,
+          },
+          { new: true }
+        );
+
+        // Gửi email trạng thái nếu cần (không chặn luồng)
+        sendBookingStatusEmail(updated, updated.status);
+
+        return res.status(200).json(updated);
       }
 
+      // Kiểm tra block theo thời gian
       const blocked = await TableBlock.findOne({
         restaurantId,
         tableId: req.body.tableId,
@@ -27,6 +54,7 @@ export const createBooking = async (req, res) => {
       }
     }
 
+    // Không có booking nào trùng => tạo mới
     const booking = await Booking.create({
       ...req.body,
       createdBy: req.user?.id,
@@ -45,8 +73,6 @@ export const updateBookingStatus = async (req, res) => {
     const { status, tableId } = req.body;
     const allowed = ["pending", "confirmed", "seated", "completed", "cancelled", "no_show"];
     
-    console.log(`[booking][updateStatus] id=${id}, status=${status}, tableId=${tableId}`);
-    
     if (!allowed.includes(status)) {
       return res.status(400).json({ message: "Invalid booking status" });
     }
@@ -55,7 +81,6 @@ export const updateBookingStatus = async (req, res) => {
     if (!prev) return res.status(404).json({ message: "Booking not found" });
     if (prev.status === status) return res.json(prev);
 
-    console.log(`[booking][updateStatus] prev status=${prev.status} -> new status=${status}`);
 
     // Cập nhật booking
     const updateData = { status, updatedBy: req.user?.id };
@@ -64,13 +89,6 @@ export const updateBookingStatus = async (req, res) => {
     const updated = await Booking.findByIdAndUpdate(id, updateData, { new: true });
     if (!updated) return res.status(404).json({ message: "Booking not found" });
     
-    console.log(`[booking][updateStatus] updated successfully: ${JSON.stringify({
-      id: updated._id,
-      status: updated.status,
-      tableId: updated.tableId,
-      date: updated.date,
-      time: updated.time
-    })}`);
     
     // Gửi email thông báo (không chặn luồng chính)
     sendBookingStatusEmail(updated, status);
@@ -97,10 +115,14 @@ const sendBookingStatusEmail = async (booking, status) => {
       guestCount: (booking.adults ?? 0) + (booking.children ?? 0),
     };
     
-    if (status === "confirmed") {
+    if (status === "pending") {
+      await sendPendingEmail(to, payload);
+    } else if (status === "confirmed") {
       await sendConfirmationEmail(to, payload);
     } else if (status === "cancelled") {
       await sendCancelEmail(to, payload);
+    } else if (status === "completed") {
+      await sendCompletedEmail(to, payload);
     }
   } catch (mailErr) {
     console.error("[mail] booking status notify failed:", mailErr.message);

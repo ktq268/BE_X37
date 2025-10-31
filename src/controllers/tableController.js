@@ -1,7 +1,8 @@
 import Table from "../models/TableModel.js";
 import Booking from "../models/BookingModel.js";
 import TableBlock from "../models/TableBlockModel.js";
-
+import mongoose from "mongoose";
+import { sendConfirmationEmail } from "../services/mailService.js";
 export const createTable = async (req, res) => {
   try {
     if (req.user?.id) {
@@ -111,6 +112,9 @@ export const listTablesWithStatus = async (req, res) => {
 
     const filter = {};
     if (restaurantId && restaurantId !== "undefined") {
+      if (!mongoose.Types.ObjectId.isValid(restaurantId)) {
+        return res.status(400).json({ message: "Invalid restaurantId parameter" });
+      }
       filter.restaurantId = restaurantId;
     }
 
@@ -217,7 +221,16 @@ export const listTablesWithStatus = async (req, res) => {
 export const updateTableStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, date } = req.body;
+    const {
+      status,
+      date,
+      customerName,
+      customerEmail,
+      customerPhone,
+      adults,
+      children,
+      time,
+    } = req.body;
     const allowed = ["available", "reserved", "occupied", "blocked"];
 
     if (!allowed.includes(status)) {
@@ -286,7 +299,7 @@ export const updateTableStatus = async (req, res) => {
       });
     }
 
-    // 🆕 Nếu staff đổi sang "reserved" → tạo booking mới hoặc cập nhật booking hiện tại
+    // 🆕 Nếu staff đổi sang "reserved" → tạo/cập nhật booking với thông tin khách và gửi mail
     if (status === "reserved") {
       // Xóa block nếu có
       await TableBlock.deleteMany({
@@ -301,20 +314,76 @@ export const updateTableStatus = async (req, res) => {
         status: { $in: ["pending", "confirmed"] },
       });
 
-      if (!existingBooking) {
-        // Tạo booking mới nếu chưa có
-        await Booking.create({
-          restaurantId: table.restaurantId,
+      const slotTime = time || existingBooking?.time || "12:00";
+
+      if (existingBooking) {
+        // Cập nhật thông tin khách và xác nhận
+        await Booking.findByIdAndUpdate(existingBooking._id, {
+          customerName: customerName || existingBooking.customerName || "Khách lẻ",
+          customerPhone: customerPhone || existingBooking.customerPhone || "0000000000",
+          // Không bao giờ set guest@restaurant.com; nếu không có email thì bỏ qua (không gửi mail)
+          ...(customerEmail ? { customerEmail } : {}),
+          adults: typeof adults === "number" ? adults : (existingBooking.adults ?? 1),
+          children: typeof children === "number" ? children : (existingBooking.children ?? 0),
+          time: slotTime,
+          status: "confirmed",
+          updatedBy: req.user?.id,
+          updatedAt: new Date(),
+        });
+      } else {
+        // Kiểm tra xem có booking cũ (cancelled/completed/no_show) cùng slot thời gian không
+        const oldBooking = await Booking.findOne({
           tableId: id,
           date: targetDate,
-          time: "12:00", // Thời gian mặc định
-          customerName: "Khách lẻ",
-          customerPhone: "0000000000",
-          customerEmail: "guest@restaurant.com",
-          adults: 1,
-          children: 0,
-          status: "confirmed",
-          createdBy: req.user?.id,
+          time: slotTime,
+        });
+
+        if (oldBooking && ["cancelled", "completed", "no_show"].includes(oldBooking.status)) {
+          // Tái sử dụng booking cũ với thông tin khách hàng từ form
+          await Booking.findByIdAndUpdate(oldBooking._id, {
+            customerName: customerName || oldBooking.customerName || "Khách lẻ",
+            customerPhone: customerPhone || oldBooking.customerPhone || "0000000000",
+            ...(customerEmail ? { customerEmail } : {}),
+            adults: typeof adults === "number" ? adults : (oldBooking.adults ?? 1),
+            children: typeof children === "number" ? children : (oldBooking.children ?? 0),
+            time: slotTime,
+            status: "confirmed",
+            updatedBy: req.user?.id,
+            updatedAt: new Date(),
+          });
+        } else if (!oldBooking) {
+          // Tạo booking mới với thông tin khách hàng từ form
+          await Booking.create({
+            restaurantId: table.restaurantId,
+            tableId: id,
+            date: targetDate,
+            time: slotTime,
+            customerName: customerName || "Khách lẻ",
+            customerPhone: customerPhone || "0000000000",
+            ...(customerEmail ? { customerEmail } : {}),
+            adults: typeof adults === "number" ? adults : 1,
+            children: typeof children === "number" ? children : 0,
+            status: "confirmed",
+            createdBy: req.user?.id,
+          });
+        }
+      }
+
+      // Lấy booking cuối cùng để gửi email xác nhận nếu email hợp lệ
+      const finalBooking = await Booking.findOne({
+        tableId: id,
+        date: targetDate,
+        time: slotTime,
+        status: "confirmed",
+      }).lean();
+
+      if (finalBooking?.customerEmail) {
+        await sendConfirmationEmail(finalBooking.customerEmail, {
+          customerName: finalBooking.customerName,
+          date: finalBooking.date,
+          time: finalBooking.time,
+          tableNumber: table.tableNumber,
+          guestCount: (finalBooking.adults ?? 0) + (finalBooking.children ?? 0),
         });
       }
     }

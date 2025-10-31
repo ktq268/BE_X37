@@ -11,7 +11,14 @@ export const createFeedback = async (req, res) => {
       if (!booking || booking.status !== "completed")
         return res.status(400).json({ message: "Chỉ gửi feedback khi bữa ăn đã hoàn tất" });
   
-      const feedback = await Feedback.create({ bookingId, userId, rating, comment, images });
+      const feedback = await Feedback.create({
+        bookingId,
+        restaurantId: booking.restaurantId,
+        userId,
+        rating,
+        comment,
+        images
+      });
       res.status(201).json({ message: "Cảm ơn bạn đã đánh giá!", feedback });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -21,11 +28,12 @@ export const createFeedback = async (req, res) => {
 // 🟡 READ ALL
 export const getFeedbacks = async (req, res) => {
     try {
-      const { rating, search } = req.query;
+      const { rating, search, restaurantId } = req.query;
       const query = {};
   
       if (rating) query.rating = Number(rating);
       if (search) query.comment = { $regex: search, $options: "i" };
+      if (restaurantId && restaurantId !== "none") query.restaurantId = restaurantId;
   
       const feedbacks = await Feedback.find(query)
         .populate("userId", "name email")
