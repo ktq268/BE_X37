@@ -1,24 +1,72 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-});
+// Khởi tạo transporter linh hoạt theo biến môi trường
+let cachedTransporter = null;
 
-export const verifyTransporter = async () => {
+const buildTransporter = () => {
+  // Ưu tiên URL chuẩn SMTP nếu có
+  if (process.env.SMTP_URL) {
+    return nodemailer.createTransport(process.env.SMTP_URL);
+  }
+
+  // Cấu hình theo host/port nếu khai báo
+  if (process.env.MAIL_HOST) {
+    const port = Number(process.env.MAIL_PORT || 587);
+    const secure = process.env.MAIL_SECURE === "true" || port === 465;
+
+    const auth =
+      process.env.MAIL_USER && process.env.MAIL_PASS
+        ? { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS }
+        : undefined;
+
+    return nodemailer.createTransport({
+      host: process.env.MAIL_HOST,
+      port,
+      secure,
+      auth,
+    });
+  }
+
+  // Fallback Gmail nếu có SMTP_USER/PASS
+  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  }
+
+  // Không có cấu hình hợp lệ
+  return null;
+};
+
+export const getTransporter = async () => {
+  if (cachedTransporter) return cachedTransporter;
+
+  const transporter = buildTransporter();
+  if (!transporter) {
+    console.warn(
+      "[mail] transport not configured. Please set SMTP_URL or MAIL_HOST/PORT/USER/PASS or SMTP_USER/SMTP_PASS."
+    );
+    return null;
+  }
+
   try {
     await transporter.verify();
-    return true;
+    cachedTransporter = transporter;
+    return cachedTransporter;
   } catch (err) {
     console.error("[mail] transporter verify failed:", err.message);
-    return false;
+    // Vẫn cache để thử gửi; nhiều server không hỗ trợ verify
+    cachedTransporter = transporter;
+    return cachedTransporter;
   }
 };
 
-const fromIdentity = '"Maison de Flavor" <noreply@restaurant.com>';
+const fromIdentity =
+  process.env.MAIL_FROM || '"Maison de Flavor" <noreply@restaurant.com>';
 
 const buildTextLines = (lines) => lines.filter(Boolean).join("\n");
 
@@ -35,7 +83,28 @@ const buildCommonInfo = ({ customerName, date, time, tableNumber, guestCount }) 
     "[Maison de Flavor]",
   ]);
 
+// Gửi mail tiện ích chung
+export const sendEmail = async ({ to, subject, text, html, attachments }) => {
+  const transporter = await getTransporter();
+  if (!transporter) {
+    throw new Error("Email service not configured");
+  }
+  const mailOptions = {
+    from: fromIdentity,
+    to,
+    subject,
+    text,
+    html,
+    attachments,
+  };
+  return transporter.sendMail(mailOptions);
+};
+
+// Gửi mail theo trạng thái booking
 export const sendConfirmationEmail = async (to, { customerName, date, time, tableNumber, guestCount }) => {
+  const transporter = await getTransporter();
+  if (!transporter) throw new Error("Email service not configured");
+
   const mailOptions = {
     from: fromIdentity,
     to,
@@ -53,12 +122,15 @@ export const sendConfirmationEmail = async (to, { customerName, date, time, tabl
       "",
       "Trân trọng.",
       "[Maison de Flavor]",
-    ])
+    ]),
   };
   return transporter.sendMail(mailOptions);
 };
 
 export const sendCancelEmail = async (to, { customerName, date, time, tableNumber, guestCount }) => {
+  const transporter = await getTransporter();
+  if (!transporter) throw new Error("Email service not configured");
+
   const mailOptions = {
     from: fromIdentity,
     to,
@@ -76,12 +148,15 @@ export const sendCancelEmail = async (to, { customerName, date, time, tableNumbe
       "",
       "Trân trọng.",
       "[Maison de Flavor]",
-    ])
+    ]),
   };
   return transporter.sendMail(mailOptions);
 };
 
 export const sendPendingEmail = async (to, { customerName, date, time, tableNumber, guestCount }) => {
+  const transporter = await getTransporter();
+  if (!transporter) throw new Error("Email service not configured");
+
   const mailOptions = {
     from: fromIdentity,
     to,
@@ -99,12 +174,15 @@ export const sendPendingEmail = async (to, { customerName, date, time, tableNumb
       "",
       "Trân trọng.",
       "[Maison de Flavor]",
-    ])
+    ]),
   };
   return transporter.sendMail(mailOptions);
 };
 
 export const sendCompletedEmail = async (to, { customerName, date, time, tableNumber, guestCount }) => {
+  const transporter = await getTransporter();
+  if (!transporter) throw new Error("Email service not configured");
+
   const mailOptions = {
     from: fromIdentity,
     to,
@@ -120,19 +198,7 @@ export const sendCompletedEmail = async (to, { customerName, date, time, tableNu
       "",
       "Trân trọng.",
       "[Maison de Flavor]",
-    ])
-  };
-  return transporter.sendMail(mailOptions);
-};
-
-export const sendEmail = async ({ to, subject, text, html, attachments }) => {
-  const mailOptions = {
-    from: fromIdentity,
-    to,
-    subject,
-    text,
-    html,
-    attachments,
+    ]),
   };
   return transporter.sendMail(mailOptions);
 };

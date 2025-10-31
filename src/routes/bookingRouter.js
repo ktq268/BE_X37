@@ -17,7 +17,7 @@ router.get("/table/:tableId", listBookingsByTable);
 // Staff: get all pending bookings
 router.get("/pending", staffAuth, getPendingBookings);
 
-// Staff: update booking status
-router.patch("/:id/status", auth, validate(bookingStatusUpdateSchema, "body"), updateBookingStatus);
+// Staff: update booking status (chỉ staff mới được xác nhận và gán bàn)
+router.patch("/:id/status", staffAuth, validate(bookingStatusUpdateSchema, "body"), updateBookingStatus);
 
 export default router;

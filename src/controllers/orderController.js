@@ -6,6 +6,11 @@ export const createOrderFromCart = async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
+    const restaurantId = req.body?.restaurantId;
+    if (!restaurantId) {
+      return res.status(400).json({ message: "restaurantId is required" });
+    }
+
     const cart = await Cart.findOne({ userId });
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
@@ -30,6 +35,7 @@ export const createOrderFromCart = async (req, res) => {
 
     const order = await Order.create({
       userId,
+      restaurantId,
       items: orderItems,
       subtotal,
       discount,
