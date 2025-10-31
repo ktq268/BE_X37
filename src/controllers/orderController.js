@@ -3,6 +3,8 @@ import Order from "../models/OrderModel.js";
 
 export const createOrderFromCart = async (req, res) => {
   try {
+    const { customerName, tableNumber } = req.body;
+
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
@@ -42,6 +44,8 @@ export const createOrderFromCart = async (req, res) => {
       tax,
       total,
       status: "pending",
+      customerName,
+      tableNumber,
     });
 
     // clear cart after creating order
@@ -105,6 +109,7 @@ export const staffListOrders = async (req, res) => {
         .limit(Number(limit)),
     ]);
 
+    console.log("🚀 ~ staffListOrders ~ orders:", orders);
     res.json({ page: Number(page), limit: Number(limit), total, orders });
   } catch (err) {
     console.error("staffListOrders error:", err.message);

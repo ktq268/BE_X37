@@ -41,6 +41,8 @@ const OrderSchema = new mongoose.Schema(
       default: "pending",
       index: true,
     },
+    customerName: { type: String, required: true, trim: true },
+    tableNumber: { type: String, required: true, trim: true },
   },
   { timestamps: true }
 );
