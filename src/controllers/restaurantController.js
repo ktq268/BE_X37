@@ -17,7 +17,6 @@ export const createRestaurant = async (req, res) => {
   try {
     const { name, region, address } = req.body;
     if (req.user?.id) {
-      console.log(`[restaurant][create] by user=${req.user.id}`);
     }
     const restaurant = await Restaurant.create({
       name,
@@ -39,7 +38,6 @@ export const updateRestaurant = async (req, res) => {
   try {
     const { id } = req.params;
     if (req.user?.id) {
-      console.log(`[restaurant][update] id=${id} by user=${req.user.id}`);
     }
     const updated = await Restaurant.findByIdAndUpdate(
       id,
@@ -63,7 +61,6 @@ export const deleteRestaurant = async (req, res) => {
   try {
     const { id } = req.params;
     if (req.user?.id) {
-      console.log(`[restaurant][delete] id=${id} by user=${req.user.id}`);
     }
     const deleted = await Restaurant.findByIdAndDelete(id);
     if (!deleted)

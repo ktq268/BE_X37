@@ -63,6 +63,7 @@ export const bookingStatusUpdateSchema = yup.object({
       "no_show",
     ])
     .required(),
+  tableId: yup.string().trim().optional(),
 });
 
 export const tableBlockCreateSchema = yup.object({
@@ -132,16 +133,16 @@ export const menuCreateSchema = yup.object({
   description: yup.string().trim().optional(),
   price: yup.number().min(0).required(),
   category: yup.string().trim().required(),
-  imageUrl: yup.string().trim().url().optional(),
+  imageUrl: yup.array().of(yup.string().trim().url()).optional(),
   isAvailable: yup.boolean().optional(),
 });
 
 export const menuUpdateSchema = yup.object({
-  name: yup.string().trim().optional(),
-  description: yup.string().trim().optional(),
+  name: yup.string().optional(),
+  description: yup.string().optional(),
   price: yup.number().min(0).optional(),
-  category: yup.string().trim().optional(),
-  imageUrl: yup.string().trim().url().optional(),
+  category: yup.string().optional(),
+  imageUrl: yup.array().of(yup.string().url()).optional(),
   isAvailable: yup.boolean().optional(),
 });
 
@@ -159,4 +160,77 @@ export const menuFullListQuerySchema = yup.object({
     .min(1)
     .max(9)
     .default(9),
+});
+
+// Cart & Order validators
+export const cartAddItemSchema = yup.object({
+  menuItemId: yup.string().trim().required(),
+  quantity: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .default(1),
+  notes: yup.string().trim().optional(),
+});
+
+export const cartUpdateItemSchema = yup.object({
+  quantity: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .required(),
+  notes: yup.string().trim().optional(),
+});
+
+export const orderCreateFromCartSchema = yup.object({
+  applyDiscount: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .min(0)
+    .default(0),
+});
+
+// Staff orders
+export const staffOrderListQuerySchema = yup.object({
+  status: yup
+    .string()
+    .oneOf([
+      "pending",
+      "confirmed",
+      "preparing",
+      "ready",
+      "completed",
+      "cancelled",
+    ])
+    .optional(),
+  q: yup.string().trim().optional(),
+  page: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .default(1),
+  limit: yup
+    .number()
+    .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))
+    .integer()
+    .min(1)
+    .max(100)
+    .default(20),
+});
+
+export const staffOrderStatusUpdateSchema = yup.object({
+  status: yup
+    .string()
+    .oneOf([
+      "pending",
+      "confirmed",
+      "preparing",
+      "ready",
+      "completed",
+      "cancelled",
+    ])
+    .required(),
 });
