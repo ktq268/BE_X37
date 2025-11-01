@@ -3,6 +3,8 @@ import Order from "../models/OrderModel.js";
 
 export const createOrderFromCart = async (req, res) => {
   try {
+    const { customerName, tableNumber } = req.body;
+
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 

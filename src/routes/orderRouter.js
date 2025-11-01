@@ -21,7 +21,7 @@ const router = express.Router();
 router.post(
   "/from-cart",
   auth,
-  validate(orderCreateFromCartSchema, "body"),
+  // validate(orderCreateFromCartSchema, "body"),
   createOrderFromCart
 );
 router.get("/mine", auth, listMyOrders);
