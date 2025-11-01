@@ -263,18 +263,36 @@ export const updateTableStatus = async (req, res) => {
 
     // 🆕 Nếu staff đổi sang "occupied" → cập nhật booking thành "seated"
     if (status === "occupied") {
-      // Tìm booking "confirmed" cho bàn này trong ngày được chọn
-      const confirmedBooking = await Booking.findOne({
+      // Tìm booking đang hoạt động (confirmed hoặc pending) cho bàn này trong ngày được chọn
+      let activeBooking = await Booking.findOne({
         tableId: id,
         date: targetDate,
-        status: "confirmed",
+        status: { $in: ["confirmed", "pending"] },
       });
 
-      if (confirmedBooking) {
+      if (activeBooking) {
         // Cập nhật booking thành "seated"
-        await Booking.findByIdAndUpdate(confirmedBooking._id, {
+        await Booking.findByIdAndUpdate(activeBooking._id, {
           status: "seated",
           updatedAt: new Date(),
+          updatedBy: req.user?.id,
+        });
+      } else {
+        // Không có booking đang hoạt động, tạo booking mới với trạng thái "seated"
+        const currentTime = new Date().toTimeString().slice(0, 5); // HH:mm format
+        
+        await Booking.create({
+          restaurantId: table.restaurantId,
+          tableId: id,
+          date: targetDate,
+          time: time || currentTime,
+          adults: adults || 2,
+          children: children || 0,
+          customerName: customerName || "Khách lẻ",
+          customerPhone: customerPhone || "0000000000",
+          customerEmail: customerEmail || "guest@restaurant.com",
+          status: "seated",
+          createdBy: req.user?.id,
           updatedBy: req.user?.id,
         });
       }

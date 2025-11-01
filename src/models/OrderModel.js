@@ -30,6 +30,7 @@ const OrderSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    restaurantName: { type: String, trim: true },
     items: { type: [OrderItemSchema], default: [] },
     subtotal: { type: Number, required: true, min: 0 },
     discount: { type: Number, required: true, min: 0, default: 0 },
@@ -40,6 +41,14 @@ const OrderSchema = new mongoose.Schema(
       enum: ["pending", "preparing", "served", "completed"],
       default: "pending",
       index: true,
+    },
+    customerName: { type: String, trim: true },
+    tableNumber: { type: String, trim: true },
+    feedback: {
+      rating: { type: Number, min: 1, max: 5 },
+      comment: { type: String, trim: true },
+      createdAt: { type: Date },
+      updatedAt: { type: Date }
     },
   },
   { timestamps: true }

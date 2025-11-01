@@ -13,6 +13,7 @@ import {
   staffListOrders,
   staffGetOrderDetail,
   staffUpdateOrderStatus,
+  createOrderFeedback,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.post(
 );
 router.get("/mine", auth, listMyOrders);
 router.get("/:id", auth, getOrderDetail);
+router.post("/:id/feedback", auth, createOrderFeedback);
 
 // Staff endpoints
 router.get(

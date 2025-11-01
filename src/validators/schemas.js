@@ -185,6 +185,11 @@ export const cartUpdateItemSchema = yup.object({
 });
 
 export const orderCreateFromCartSchema = yup.object({
+  restaurantId: yup.string().trim().required(),
+  restaurantName: yup.string().trim().optional(),
+  customerName: yup.string().trim().optional(),
+  tableNumber: yup.string().trim().optional(),
+  region: yup.string().oneOf(["north", "central", "south"]).optional(),
   applyDiscount: yup
     .number()
     .transform((v, o) => (o === "" || o === undefined ? undefined : Number(o)))

@@ -4,10 +4,13 @@ import MenuItem from "../models/MenuItemModel.js";
 export const listMenu = async (req, res) => {
   try {
     const { category, q } = req.query;
+    // Khai báo filter và (tuỳ chọn) chỉ lấy món còn hàng
+    const filter = { isAvailable: true };
+
     if (category) filter.category = category;
     if (q) filter.name = { $regex: q, $options: "i" };
 
-    const items = await MenuItem.find().sort({ name: 1 }).lean();
+    const items = await MenuItem.find(filter).sort({ name: 1 }).lean();
 
     res.json({ items });
   } catch (err) {
